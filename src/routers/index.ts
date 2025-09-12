@@ -1,5 +1,5 @@
 import { protectedProcedure, publicProcedure, router } from "@/lib/trpc";
-import { todoRouter } from "./todo";
+import { todoRouter } from "./todo-router";
 
 export const appRouter = router({
 	healthCheck: publicProcedure.query(() => {
