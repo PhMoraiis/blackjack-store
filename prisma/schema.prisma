@@ -1,6 +1,12 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
-  provider = "prisma-client"
-  output   = "../generated"
+  provider = "prisma-client-js"
+  output   = "../prisma/generated/prisma"
 }
 
 datasource db {
@@ -9,7 +15,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id @map("_id")
+  id            String      @id @map("_id")
   name          String
   email         String
   emailVerified Boolean
@@ -18,6 +24,8 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
+  GameWallet    GameWallet?
+  GameRound     GameRound[]
 
   @@unique([email])
   @@map("user")
@@ -68,10 +76,56 @@ model Verification {
   @@map("verification")
 }
 
-model Todo {
-  id        Int     @id @default(autoincrement())
-  text      String
-  completed Boolean @default(false)
+model GameWallet {
+  id        String      @id @map("_id")
+  userId    String      @unique
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balance   Int         @default(0)
+  rounds    GameRound[]
+  createdAt DateTime
+  updatedAt DateTime
 
-  @@map("todo")
+  @@map("game_wallet")
+}
+
+model GameRound {
+  id           String      @id @map("_id")
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  state        RoundState
+  seed         String
+  nonce        Int         @default(0)
+  hand         String[]    @default([])
+  total        Int         @default(0)
+  points       Int         @default(0)
+  finishedAt   DateTime?
+  logs         RoundLog[]
+  createdAt    DateTime
+  updatedAt    DateTime
+  GameWallet   GameWallet? @relation(fields: [gameWalletId], references: [id])
+  gameWalletId String?
+
+  @@index([userId])
+  @@map("game_round")
+}
+
+model RoundLog {
+  id         String    @id @map("_id")
+  roundId    String
+  round      GameRound @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  action     String
+  card       String?
+  nonce      Int?
+  totalAfter Int?
+  createdAt  DateTime
+
+  @@index([roundId])
+  @@map("round_log")
+}
+
+enum RoundState {
+  IDLE
+  PLAYING
+  BUST
+  FINISHED
 }

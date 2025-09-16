@@ -59,3 +59,5 @@ dev-dist
 
 .open-next
 .husky
+
+/prisma/generated/prisma
