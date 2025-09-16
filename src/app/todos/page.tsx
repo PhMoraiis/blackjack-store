@@ -1,15 +1,19 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { TodoListContainer } from "@/interfaces/web/containers/todo/todo-list.container";
-import { TodoFormContainer } from "@/interfaces/web/containers/todo/todo-form.container";
 import { useState } from "react";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 
 export default function TodosPage() {
-	const [refreshList, setRefreshList] = useState<boolean>(false);
+	const [_refreshList, setRefreshList] = useState<boolean>(false);
 
-	const handleTodoCreated = () => {
-		setRefreshList(prev => !prev);
+	const _handleTodoCreated = () => {
+		setRefreshList((prev) => !prev);
 	};
 
 	return (
@@ -20,10 +24,7 @@ export default function TodosPage() {
 					<CardDescription>Manage your tasks efficiently</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<div className="mb-6">
-						<TodoFormContainer onTodoCreated={handleTodoCreated} />
-					</div>
-					<TodoListContainer refreshTrigger={refreshList} />
+					<div className="mb-6" />
 				</CardContent>
 			</Card>
 		</div>
